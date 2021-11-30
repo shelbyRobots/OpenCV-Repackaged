@@ -11,17 +11,23 @@ ext {
     PUBLISH_VCS_CONNECTION = 'scm:git:github.com/OpenFTC/OpenCV-Repackaged.git'
 }
 
+def openCVersionName = "4.5.3"
+def openCVersionCode = ((4 * 100 + 5) * 100 + 3) * 10 + 0
+
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 29
+    //buildToolsVersion "26.0.2"
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 21
+        minSdkVersion 23
+        targetSdkVersion 28
+
+        versionCode openCVersionCode
+        versionName openCVersionName
 
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=c++_shared"
+                arguments "-DANDROID_STL=c++_shared", "-DANDROID_ARM_NEON=TRUE"
                 targets "dummy_target_cpp_lib"
             }
         }
@@ -29,16 +35,22 @@ android {
 
     buildTypes {
         debug {
-            ndk {
-                abiFilters "armeabi-v7a"
+            //ndk {
+            //    abiFilters "arm64-v8a"
+            //}
+            packagingOptions {
+                doNotStrip '**/*.so'  // controlled by OpenCV CMake scripts
             }
         }
         release {
+            //ndk {
+            //    abiFilters "arm64-v8a"
+            //}
+            packagingOptions {
+                doNotStrip '**/*.so'  // controlled by OpenCV CMake scripts
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            ndk {
-                abiFilters "armeabi-v7a"
-            }
         }
     }
 
@@ -47,15 +59,43 @@ android {
         abortOnError false
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            //jniLibs.srcDirs = ['native/libs']
+            java.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/aidl']
+            res.srcDirs = ['src/main/res']
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+        }
+    }
+
     externalNativeBuild {
         cmake {
             path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
         }
     }
+
+    splits {
+         abi {
+             enable true
+             universalApk false
+             reset()
+             include 'arm64-v8a'
+         }
+     }
+
+    ndkVersion '21.1.6352462'
+   // ndkVersion '23.0.7196353'
 }
 
 dependencies {
-    compileOnly 'org.firstinspires.ftc:RobotCore:6.2.1'
+    //compileOnly 'org.firstinspires.ftc:RobotCore:6.2.1'
+    compileOnly 'org.firstinspires.ftc:RobotCore:7.0.0'
 }
 
-apply from: '../sonatype-publish.gradle'
+//apply from: '../sonatype-publish.gradle'

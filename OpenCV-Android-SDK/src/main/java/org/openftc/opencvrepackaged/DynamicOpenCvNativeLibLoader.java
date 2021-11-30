@@ -49,7 +49,8 @@ import java.io.StreamCorruptedException;
 public class DynamicOpenCvNativeLibLoader
 {
     private static final String NATIVE_LIB_FILENAME = "libOpenCvAndroid453.so";
-    private static final String NATIVE_LIB_MD5 = "9d9a9ed11665dc92c91c475aad54ef94";
+    //private static final String NATIVE_LIB_MD5 = "9d9a9ed11665dc92c91c475aad54ef94";
+    private static final String NATIVE_LIB_MD5 = "3ec0635ea39ca64d371fb5166cd4a685";
     private static final String TAG = "OpenFTC-OpenCV-Repackaged-Loader";
     private static boolean alreadyLoaded = false;
     private static Runnable onPeerConnectedRunnable = null;
